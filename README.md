@@ -38,17 +38,6 @@ Este projeto é um exemplo básico de um sistema de cadastro e login usando o fr
 8. **Formulários HTML**:
    - O código usa o `FastHTML` para criar formulários dinâmicos de cadastro e login.
 
-## FUNCIONAMENTO:
-1. **Configuração Inicial**:
-   - O sistema cria automaticamente o banco de dados (`DATABASE.db`) quando executado pela primeira vez, se ele não existir.
-
-2. **Iniciar o Servidor**:
-   - O servidor pode ser iniciado simplesmente chamando a função `serve()` no final do código.
-
-3. **Interação do Usuário**:
-   - **Cadastro**: O usuário acessa a página inicial (`/`), clica em "CADASTRAR", insere seu nome de usuário e senha e clica em "Cadastrar".
-   - **Login**: Após o cadastro, o usuário pode acessar a página de login (`/login`), inserir suas credenciais e acessar a página de tarefas (`/tasks`) se os dados forem válidos.
-
 ## EXECUTANDO ESSE PROJETO:
 1. **Instalação das Dependências::**
    - Entre no diretório `CODIGO` e execute o comando:
