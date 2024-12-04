@@ -29,14 +29,11 @@ Este projeto é um exemplo básico de um sistema de cadastro e login usando o fr
    - Exibe um formulário de login onde o usuário insere seu nome de usuário e senha.
    - O sistema verifica se o nome de usuário existe no banco de dados e se a senha fornecida corresponde à senha armazenada (comparando com a senha criptografada).
 
-6. **Rota de Tarefas (`/tasks`)**:
-   - Após o login bem-sucedido, o usuário é redirecionado para a página de `inicial`, com uma mensagem de boas-vindas.
+6. **Rota de Tarefas (`/tasks`)**:  
+   - Após o login bem-sucedido, o usuário é redirecionado para a página inicial com uma mensagem de boas-vindas personalizada, exibindo o nome do usuário.
 
 7. **Mensagens de Erro e Sucesso**:
    - Mensagens de erro e sucesso são exibidas de forma dinâmica (exemplo: "Usuário não encontrado", "Cadastro realizado com sucesso").
-
-8. **Formulários HTML**:
-   - O código usa o `FastHTML` para criar formulários dinâmicos de cadastro e login.
 
 ## EXECUTANDO ESSE PROJETO:
 1. **Instalação das Dependências::**
