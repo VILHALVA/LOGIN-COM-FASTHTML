@@ -1,10 +1,10 @@
 # LOGIN COM FASTHTML
 👨‍🏫FORMULARIO DE CADASTRO E LOGIN COM FASTHTML E SQLITE.
 
-<img src="./IMAGENS/FOTO_1.png" align="center" width="500"> <br>
-<img src="./IMAGENS/FOTO_2.png" align="center" width="500"> <br>
-<img src="./IMAGENS/FOTO_3.png" align="center" width="500"> <br>
-<img src="./IMAGENS/FOTO_4.png" align="center" width="500"> <br>
+<img src="./IMAGENS/FOTO_01.png" align="center" width="500"> <br>
+<img src="./IMAGENS/FOTO_02.png" align="center" width="500"> <br>
+<img src="./IMAGENS/FOTO_03.png" align="center" width="500"> <br>
+<img src="./IMAGENS/FOTO_04.png" align="center" width="500"> <br>
 
 ## DESCRIÇÃO:
 Este projeto é um exemplo básico de um sistema de cadastro e login usando o framework **FastHTML** para renderizar páginas e interagir com o banco de dados SQLite. 
