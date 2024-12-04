@@ -59,8 +59,8 @@ Este projeto é um exemplo básico de um sistema de cadastro e login usando o fr
    - Preencha o formulário de cadastro na rota `/register`.
    - Se o **cadastro for bem-sucedido**, você será redirecionado a página de login na rota `/login`.
 
-5. Após **fazer login**:
-   - Se as **credenciais forem corretas**, você será redirecionado para a rota `/tasks` com a mensagem de `BOAS VINDAS!`.
+5. Após **fazer login**:  
+   - Se as **credenciais forem corretas**, você será redirecionado para a rota `/tasks` com a mensagem: **"☺️Bem-vindo, [SEU NOME], à sua página inicial!"**  
 
 ## NÃO SABE?
 - Entendemos que para manipular arquivos em muitas linguagens, é necessário possuir conhecimento nessas áreas. Para auxiliar nesse aprendizado, oferecemos cursos gratuitos disponíveis:
