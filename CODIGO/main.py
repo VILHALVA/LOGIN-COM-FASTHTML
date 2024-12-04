@@ -2,6 +2,7 @@ import sqlite3
 import os
 from fasthtml.common import fast_app, serve, Form, Input, Button, Div, Redirect
 from passlib.hash import bcrypt
+from starlette.responses import RedirectResponse
 
 app, routes = fast_app()
 
@@ -42,27 +43,7 @@ def index(request):
         ),
         style="text-align: center; margin-top: 50px;"
     )
-
-@routes("/login", methods=["GET", "POST"])
-async def login(request):
-    if request.method == "POST":
-        form_data = await request.form()
-        usuario, senha = form_data.get("usuario"), form_data.get("senha")
-        
-        if not usuario or not senha:
-            return exibir_mensagem("😡Por favor, preencha ambos os campos!", erro=True)
-        
-        resultado = executar_db("SELECT senha FROM usuarios WHERE usuario = ?", (usuario,), fetchone=True)
-        
-        if not resultado:
-            return exibir_mensagem("🤬Usuário não encontrado. Tente novamente!", erro=True)
-        
-        if verificar_senha(senha, resultado[0]):
-            return Redirect("/tasks")
-        return exibir_mensagem("🤬Senha incorreta. Tente novamente!", erro=True)
     
-    return renderizar_formulario("/login", "LOGIN")
-
 @routes("/register", methods=["GET", "POST"])
 async def register(request):
     if request.method == "POST":
@@ -81,13 +62,46 @@ async def register(request):
 
     return renderizar_formulario("/register", "CADASTRAR")
 
-@routes("/tasks")
-def tasks_page(request):
+@routes("/login", methods=["GET", "POST"])
+async def login(request):
+    if request.method == "POST":
+        form_data = await request.form()
+        usuario, senha = form_data.get("usuario"), form_data.get("senha")
+
+        if not usuario or not senha:
+            return exibir_mensagem("😡Por favor, preencha ambos os campos!", erro=True)
+
+        resultado = executar_db("SELECT senha FROM usuarios WHERE usuario = ?", (usuario,), fetchone=True)
+
+        if not resultado:
+            return exibir_mensagem("🤬Usuário não encontrado. Tente novamente!", erro=True)
+
+        if verificar_senha(senha, resultado[0]):
+            response = RedirectResponse(url="/tasks", status_code=302)
+            response.set_cookie(key="usuario_autenticado", value=usuario, httponly=True)
+            return response
+
+        return exibir_mensagem("🤬Senha incorreta. Tente novamente!", erro=True)
+
+    return renderizar_formulario("/login", "LOGIN")
+
+@routes("/tasks", methods=["GET"])
+async def tasks_page(request):
+    usuario = request.cookies.get("usuario_autenticado")
+    
+    if not usuario:
+        return Redirect("/login")  
+
+    resultado = executar_db("SELECT usuario FROM usuarios WHERE usuario = ?", (usuario,), fetchone=True)
+    if not resultado:
+        return Redirect("/login") 
+
+    name = resultado[0]  
     return Div(
         Div(
-            "☺️Bem-vindo à sua página de inicial!",
+            f"☺️Bem-vindo, {name}, à sua página inicial!",
             class_="task-welcome-message",
-            style="text-align: center; font-size: 60px; margin-top: 50px; animation: fadeIn 5s ease-in-out;"
+            style="text-align: center; font-size: 40px; margin-top: 50px; animation: fadeIn 5s ease-in-out;"
         ),
         class_="task-page"
     )
