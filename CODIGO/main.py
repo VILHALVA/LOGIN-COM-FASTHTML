@@ -2,7 +2,6 @@ import sqlite3
 import os
 from fasthtml.common import fast_app, serve, Form, Input, Button, Div, Redirect
 from passlib.hash import bcrypt
-from starlette.responses import RedirectResponse
 
 app, routes = fast_app()
 
@@ -25,6 +24,20 @@ def executar_db(query, parametros=(), fetchone=False):
         cursor.execute(query, parametros)
         conn.commit()
         return cursor.fetchone() if fetchone else cursor.fetchall()
+    
+def renderizar_formulario(action, botao_texto):
+    return Div(
+        Form(
+            Div(
+                Input(type="text", name="usuario", placeholder="Nome de usuário", required=True, style="margin-bottom: 15px; padding: 10px; width: 100%;"),
+                Input(type="password", name="senha", placeholder="Senha", required=True, style="margin-bottom: 15px; padding: 10px; width: 100%;"),
+                style="margin-bottom: 20px;"
+            ),
+            Button(botao_texto, type="submit", style="padding: 10px 20px;"),
+            action=action, method="post", style="max-width: 300px; margin: auto; display: block;"
+        ),
+        style="text-align: center; margin-top: 50px;"
+    )
 
 def criptografar_senha(senha):
     return bcrypt.hash(senha)
@@ -71,15 +84,15 @@ async def login(request):
         if not usuario or not senha:
             return exibir_mensagem("😡Por favor, preencha ambos os campos!", erro=True)
 
-        resultado = executar_db("SELECT senha FROM usuarios WHERE usuario = ?", (usuario,), fetchone=True)
+        resultado = executar_db("SELECT id, usuario, senha FROM usuarios WHERE usuario = ?", (usuario,), fetchone=True)
 
         if not resultado:
             return exibir_mensagem("🤬Usuário não encontrado. Tente novamente!", erro=True)
 
-        if verificar_senha(senha, resultado[0]):
-            response = RedirectResponse(url="/tasks", status_code=302)
-            response.set_cookie(key="usuario_autenticado", value=usuario, httponly=True)
-            return response
+        user_id, nome, hash_senha = resultado
+
+        if verificar_senha(senha, hash_senha):
+            return Redirect(f"/tasks?user_id={user_id}&nome={nome}")
 
         return exibir_mensagem("🤬Senha incorreta. Tente novamente!", erro=True)
 
@@ -87,37 +100,19 @@ async def login(request):
 
 @routes("/tasks", methods=["GET"])
 async def tasks_page(request):
-    usuario = request.cookies.get("usuario_autenticado")
-    
-    if not usuario:
+    user_id = request.query_params.get("user_id")
+    nome = request.query_params.get("nome")
+
+    if not user_id or not nome:
         return Redirect("/login")  
 
-    resultado = executar_db("SELECT usuario FROM usuarios WHERE usuario = ?", (usuario,), fetchone=True)
-    if not resultado:
-        return Redirect("/login") 
-
-    name = resultado[0]  
     return Div(
         Div(
-            f"☺️Bem-vindo, {name}, à sua página inicial!",
+            f"☺️Bem-vindo, {nome}, à sua página inicial!",
             class_="task-welcome-message",
             style="text-align: center; font-size: 40px; margin-top: 50px; animation: fadeIn 5s ease-in-out;"
         ),
         class_="task-page"
-    )
-
-def renderizar_formulario(action, botao_texto):
-    return Div(
-        Form(
-            Div(
-                Input(type="text", name="usuario", placeholder="Nome de usuário", required=True, style="margin-bottom: 15px; padding: 10px; width: 100%;"),
-                Input(type="password", name="senha", placeholder="Senha", required=True, style="margin-bottom: 15px; padding: 10px; width: 100%;"),
-                style="margin-bottom: 20px;"
-            ),
-            Button(botao_texto, type="submit", style="padding: 10px 20px;"),
-            action=action, method="post", style="max-width: 300px; margin: auto; display: block;"
-        ),
-        style="text-align: center; margin-top: 50px;"
     )
 
 def exibir_mensagem(mensagem, erro=False):
